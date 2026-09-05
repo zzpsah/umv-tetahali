@@ -6,6 +6,7 @@
 <title>Admin Login | उच्च माध्यमिक विद्यालय, तेतहली</title>
 <meta name="description" content="विद्यालय के प्रतिबंधित प्रशासनिक विवरण के लिए सुरक्षित Admin Login.">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.bgx{background-image:radial-gradient(circle at 15% 15%,rgba(59,130,246,.22),transparent 30%),radial-gradient(circle at 85% 85%,rgba(245,158,11,.16),transparent 28%),linear-gradient(135deg,#020617,#0f172a 55%,#172554)}</style>
 </head>
 <body class="min-h-screen bgx text-slate-800">
@@ -19,22 +20,29 @@
 <form id="loginForm" class="p-7" autocomplete="on">
 <div class="mb-5"><label for="email" class="block text-sm font-bold mb-2">Admin Email</label><input id="email" name="email" type="email" autocomplete="username" required placeholder="admin@example.com" class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600"></div>
 <div class="mb-4"><label for="password" class="block text-sm font-bold mb-2">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600"></div>
-<div class="flex items-center justify-between text-sm mb-6"><label class="flex items-center gap-2 text-slate-500"><input type="checkbox" class="rounded"> Remember me</label><a href="#" class="text-blue-700 font-semibold">Forgot password?</a></div>
-<button type="submit" class="w-full rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 transition">सुरक्षित लॉगिन</button>
+<div class="flex items-center justify-between text-sm mb-6"><label class="flex items-center gap-2 text-slate-500"><input id="remember" type="checkbox" checked class="rounded"> Remember me</label><button id="forgot" type="button" class="text-blue-700 font-semibold">Forgot password?</button></div>
+<button id="loginBtn" type="submit" class="w-full rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 transition">सुरक्षित लॉगिन</button>
 <div id="message" class="hidden mt-4 rounded-xl p-3 text-sm"></div>
 </form>
-<div class="border-t bg-slate-50 px-7 py-5 text-xs text-slate-500 leading-5">🔒 यह क्षेत्र केवल अधिकृत विद्यालय प्रशासन के लिए है। Restricted student/staff records को सार्वजनिक पृष्ठों पर प्रदर्शित नहीं किया जाएगा।</div>
+<div class="border-t bg-slate-50 px-7 py-5 text-xs text-slate-500 leading-5">🔒 Authentication Supabase Auth से संचालित है। इस पेज पर कोई service-role/secret key नहीं रखी गई है।</div>
 </div>
 <p class="text-center text-xs text-slate-500 mt-5">© UMV Tetahali • Admin Area</p>
 </div>
 </main>
 <script>
-document.getElementById('loginForm').addEventListener('submit',function(e){
- e.preventDefault();
- const box=document.getElementById('message');
- box.className='mt-4 rounded-xl p-3 text-sm bg-amber-50 text-amber-800 border border-amber-200';
- box.textContent='Authentication backend अभी connect नहीं किया गया है। Supabase Auth जोड़ने के बाद यही पेज वास्तविक restricted access देगा।';
+const SUPABASE_URL='https://sxfnrwugsyfypqgfglzc.supabase.co';
+const SUPABASE_KEY='sb_publishable_NARdPew6T6Zk8gYfxY3Hog_G7jcceKw';
+const {createClient}=supabase;
+const client=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const form=document.getElementById('loginForm'),msg=document.getElementById('message'),btn=document.getElementById('loginBtn');
+function showMessage(text,type='error'){msg.className='mt-4 rounded-xl p-3 text-sm '+(type==='ok'?'bg-emerald-50 text-emerald-800 border border-emerald-200':'bg-rose-50 text-rose-800 border border-rose-200');msg.textContent=text;}
+(async()=>{const {data}=await client.auth.getSession();if(data.session) location.href='admin-dashboard.html';})();
+form.addEventListener('submit',async e=>{e.preventDefault();btn.disabled=true;btn.textContent='लॉगिन हो रहा है…';
+const {data,error}=await client.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});
+if(error){showMessage('ईमेल या पासवर्ड सही नहीं है। कृपया पुनः प्रयास करें।');btn.disabled=false;btn.textContent='सुरक्षित लॉगिन';return;}
+showMessage('लॉगिन सफल। Admin Dashboard खोला जा रहा है।','ok');setTimeout(()=>location.href='admin-dashboard.html',300);
 });
+document.getElementById('forgot').addEventListener('click',async()=>{const email=document.getElementById('email').value.trim();if(!email){showMessage('पहले अपना Admin Email दर्ज करें।');return;}const redirectTo=location.origin+location.pathname.replace(/admin-login\.html$/,'admin-reset.html');const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo});if(error)showMessage(error.message);else showMessage('Password reset link आपके email पर भेज दिया गया है।','ok');});
 </script>
 </body>
 </html>
