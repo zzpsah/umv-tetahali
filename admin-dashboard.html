@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard | उच्च माध्यमिक विद्यालय, तेतहली</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="bg-slate-900 text-white"><div class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between gap-4"><div><div class="text-xs text-blue-300 font-semibold">RESTRICTED ADMIN AREA</div><h1 class="text-xl md:text-2xl font-black mt-1">Admin Dashboard</h1><p class="text-sm text-slate-400">उच्च माध्यमिक विद्यालय, तेतहली</p></div><button id="logout" class="px-4 py-2 rounded-xl bg-white/10 border border-white/15 text-sm font-bold hover:bg-white/15">Logout</button></div></header>
+<main class="max-w-6xl mx-auto px-4 py-8">
+<div class="bg-white border rounded-3xl p-6 shadow-sm"><div class="text-sm text-slate-500">Signed in as</div><div id="userEmail" class="font-bold text-lg mt-1">Checking session…</div><div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"><div class="rounded-2xl bg-blue-50 p-5"><div class="text-2xl">📄</div><h2 class="font-black mt-3">Restricted Documents</h2><p class="text-sm text-slate-500 mt-1">भविष्य में authenticated documents/PDF records यहाँ उपलब्ध होंगे।</p></div><div class="rounded-2xl bg-amber-50 p-5"><div class="text-2xl">📢</div><h2 class="font-black mt-3">Notice Management</h2><p class="text-sm text-slate-500 mt-1">नोटिस और circular automation के लिए सुरक्षित admin workspace.</p></div><div class="rounded-2xl bg-emerald-50 p-5"><div class="text-2xl">⚙️</div><h2 class="font-black mt-3">Automation</h2><p class="text-sm text-slate-500 mt-1">Google Drive/App Script workflows बाद में यहाँ जोड़े जा सकते हैं।</p></div></div></div>
+<div class="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900"><b>Security note:</b> Supabase Auth session इस dashboard को खोलने के लिए आवश्यक है। Database schema/RLS में इस चरण पर कोई परिवर्तन नहीं किया गया है। वास्तविक restricted database records जोड़ने से पहले संबंधित tables पर RLS policies लगाना आवश्यक होगा।</div>
+</main>
+<script>
+const SUPABASE_URL='https://sxfnrwugsyfypqgfglzc.supabase.co';
+const SUPABASE_KEY='sb_publishable_NARdPew6T6Zk8gYfxY3Hog_G7jcceKw';
+const {createClient}=supabase;const client=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+(async()=>{const {data,error}=await client.auth.getUser();if(error||!data.user){location.href='admin-login.html';return;}document.getElementById('userEmail').textContent=data.user.email||'Authenticated user';})();
+document.getElementById('logout').addEventListener('click',async()=>{await client.auth.signOut();location.href='admin-login.html';});
+</script>
+</body>
+</html>
