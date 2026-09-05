@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login | उच्च माध्यमिक विद्यालय, तेतहली</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="bg-white border-b"><div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4"><a href="index.html" class="font-black">उच्च माध्यमिक विद्यालय, तेतहली</a><a href="index.html" class="text-sm font-semibold text-blue-700">← मुख्य पृष्ठ</a></div></header>
+<main class="max-w-xl mx-auto px-4 py-12">
+<div class="bg-white border rounded-3xl shadow-sm p-6 md:p-8">
+<div class="text-sm font-bold text-blue-700">SECURE ACCESS</div>
+<h1 class="text-3xl font-black mt-2">Login / प्रवेश</h1>
+<p class="text-slate-500 mt-2">अपनी भूमिका चुनें।</p>
+<div class="grid grid-cols-3 gap-2 mt-7" role="radiogroup" aria-label="Login type">
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="role" value="student"><span class="block text-center rounded-xl border px-2 py-3 text-sm font-bold peer-checked:bg-blue-700 peer-checked:text-white peer-checked:border-blue-700">🎓 विद्यार्थी</span></label>
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="role" value="teacher"><span class="block text-center rounded-xl border px-2 py-3 text-sm font-bold peer-checked:bg-blue-700 peer-checked:text-white peer-checked:border-blue-700">👩‍🏫 शिक्षक</span></label>
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="role" value="admin"><span class="block text-center rounded-xl border px-2 py-3 text-sm font-bold peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900">🔐 Admin</span></label>
+</div>
+<div id="message" class="mt-7 rounded-2xl bg-blue-50 border border-blue-100 p-5 text-sm text-blue-900">विद्यार्थी/शिक्षक login व्यवस्था role-based access तैयार होने के बाद सक्रिय होगी।</div>
+<button id="continue" class="mt-5 w-full rounded-xl bg-blue-700 text-white font-bold py-3.5">Continue</button>
+</div>
+</main>
+<script>
+const params=new URLSearchParams(location.search);const initial=params.get('role');
+const radios=[...document.querySelectorAll('input[name="role"]')];const msg=document.getElementById('message');
+function selectRole(role){const r=radios.find(x=>x.value===role);if(r)r.checked=true;if(role==='admin'){msg.textContent='Admin access के लिए सुरक्षित प्रशासनिक login page पर जाएँ।';}else if(role==='teacher'){msg.textContent='Teacher login में केवल अधिकृत शिक्षक/data-entry उपयोगकर्ता को अनुमत data तक access मिलेगा।';}else{msg.textContent='Student login में विद्यार्थी को केवल उसके लिए उपलब्ध सेवाओं और records तक access मिलेगा।';}}
+selectRole(initial||'student');radios.forEach(r=>r.addEventListener('change',()=>selectRole(r.value)));
+document.getElementById('continue').addEventListener('click',()=>{const role=radios.find(r=>r.checked)?.value;if(role==='admin')location.href='admin-login.html';else{const label=role==='teacher'?'Teacher':'Student';msg.textContent=label+' login अभी configuration चरण में है। अधिकृत access सक्रिय होने पर यही प्रवेश उपलब्ध रहेगा।';}});
+</script>
+</body></html>
