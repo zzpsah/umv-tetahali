@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login | उच्च माध्यमिक विद्यालय, तेतहली</title>
+<meta name="description" content="विद्यालय के प्रतिबंधित प्रशासनिक विवरण के लिए सुरक्षित Admin Login.">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.bgx{background-image:radial-gradient(circle at 15% 15%,rgba(59,130,246,.22),transparent 30%),radial-gradient(circle at 85% 85%,rgba(245,158,11,.16),transparent 28%),linear-gradient(135deg,#020617,#0f172a 55%,#172554)}</style>
+</head>
+<body class="min-h-screen bgx text-slate-800">
+<main class="min-h-screen grid place-items-center px-4 py-10">
+<div class="w-full max-w-md">
+<a href="index.html" class="inline-flex items-center gap-2 text-slate-300 text-sm mb-6 hover:text-white">← मुख्य पृष्ठ पर वापस जाएँ</a>
+<div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+<div class="bg-slate-900 text-white px-7 py-8">
+<div class="flex items-center gap-4"><div class="w-14 h-14 rounded-2xl bg-blue-700 grid place-items-center font-black text-lg">UMV</div><div><div class="text-xs text-blue-300 font-semibold tracking-wider">RESTRICTED ACCESS</div><h1 class="text-2xl font-black mt-1">Admin Login</h1><p class="text-slate-400 text-sm mt-1">उच्च माध्यमिक विद्यालय, तेतहली</p></div></div>
+</div>
+<form id="loginForm" class="p-7" autocomplete="on">
+<div class="mb-5"><label for="email" class="block text-sm font-bold mb-2">Admin Email</label><input id="email" name="email" type="email" autocomplete="username" required placeholder="admin@example.com" class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600"></div>
+<div class="mb-4"><label for="password" class="block text-sm font-bold mb-2">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-600"></div>
+<div class="flex items-center justify-between text-sm mb-6"><label class="flex items-center gap-2 text-slate-500"><input type="checkbox" class="rounded"> Remember me</label><a href="#" class="text-blue-700 font-semibold">Forgot password?</a></div>
+<button type="submit" class="w-full rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 transition">सुरक्षित लॉगिन</button>
+<div id="message" class="hidden mt-4 rounded-xl p-3 text-sm"></div>
+</form>
+<div class="border-t bg-slate-50 px-7 py-5 text-xs text-slate-500 leading-5">🔒 यह क्षेत्र केवल अधिकृत विद्यालय प्रशासन के लिए है। Restricted student/staff records को सार्वजनिक पृष्ठों पर प्रदर्शित नहीं किया जाएगा।</div>
+</div>
+<p class="text-center text-xs text-slate-500 mt-5">© UMV Tetahali • Admin Area</p>
+</div>
+</main>
+<script>
+document.getElementById('loginForm').addEventListener('submit',function(e){
+ e.preventDefault();
+ const box=document.getElementById('message');
+ box.className='mt-4 rounded-xl p-3 text-sm bg-amber-50 text-amber-800 border border-amber-200';
+ box.textContent='Authentication backend अभी connect नहीं किया गया है। Supabase Auth जोड़ने के बाद यही पेज वास्तविक restricted access देगा।';
+});
+</script>
+</body>
+</html>
