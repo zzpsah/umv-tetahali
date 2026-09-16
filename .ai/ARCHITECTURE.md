@@ -20,14 +20,15 @@ A correction or spelling change in a source system must not create a new interna
 
 Use this order for automatic reconciliation:
 
-1. Exact stable external identifier linkage when a trusted mapping already exists.
-2. Exact normalized student name + exact normalized father name + exact DOB when all are available.
-3. Minor student-name spelling variation + father name match + DOB match.
-4. Exact student name + minor father-name spelling variation + DOB match.
-5. Minor spelling variation in both student and father names + exact DOB, only when the candidate is otherwise unique.
+1. Stable ID exact match.
+2. Exact normalized student name + exact normalized father name + exact DOB.
+3. Minor student-name spelling variation + father name exact + DOB exact.
+4. Student name exact + minor father-name spelling variation + DOB exact.
+5. Minor spelling variation in both student and father names + DOB exact, only when the candidate is otherwise unique.
 6. If DOB is unavailable in one source, require stronger agreement on student name + father name and uniqueness before automatic linking.
-7. Name-only matching must not be sufficient for automatic identity creation when multiple candidates exist.
-8. If father name and DOB both conflict, do not auto-link; send the record for review.
+7. If father name and DOB both conflict, do not auto-match; mark the record for manual verification.
+
+Name-only matching must never be sufficient for automatic identity creation when multiple candidates exist.
 
 ### Normalization and spelling tolerance
 
@@ -42,6 +43,23 @@ DOB: same
 ```
 
 This is a valid candidate for the same student because the spelling difference is minor and the corroborating fields agree.
+
+### Mismatch visibility in search and comparison results
+
+Do not remove or hide a record from reconciliation output merely because one or more fields conflict. The comparison result must explicitly show the mismatching fields so a human can verify them.
+
+Required behavior:
+
+- DOB mismatch must be highlighted explicitly in the result.
+- Father-name mismatch must be shown explicitly.
+- Student-name spelling variation must be shown explicitly when relevant.
+- A record with an otherwise strong candidate but a conflicting DOB must remain in the result as `DOB_MISMATCH` or equivalent review status.
+- A record with a conflicting father name must remain visible as `FATHER_MISMATCH` or equivalent review status.
+- If both father name and DOB conflict, keep the candidate visible but classify it as `DO_NOT_AUTO_MATCH / MANUAL_REVIEW`.
+- Search/reconciliation output should distinguish `MATCHED`, `MATCHED_WITH_MINOR_VARIATION`, `DOB_MISMATCH`, `FATHER_MISMATCH`, `MULTIPLE_CANDIDATES`, `NOT_FOUND`, and `MANUAL_REVIEW` where applicable.
+- Never convert a mismatch into `NOT_FOUND` simply because an automatic-link threshold failed when a plausible same-name or fuzzy candidate exists.
+
+The purpose of mismatch statuses is verification, not automatic rejection.
 
 ### Ambiguity handling
 
