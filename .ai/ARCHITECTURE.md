@@ -61,6 +61,24 @@ Required behavior:
 
 The purpose of mismatch statuses is verification, not automatic rejection.
 
+### Highlighting rule for final results
+
+Only records with no reliable or plausible identity match across the compared sources should be highlighted as completely unmatched.
+
+Do not highlight the following as completely unmatched when a plausible corresponding student exists:
+
+- minor student-name spelling variation,
+- minor father-name spelling variation,
+- DOB mismatch with otherwise strong identity agreement,
+- father-name mismatch with otherwise strong identity agreement,
+- other single-field conflicts that still leave a plausible candidate.
+
+These records must stay visible with a verification note/status, but they remain in the matched/plausible-match group for presentation purposes.
+
+Use `NOT_FOUND` / `UNMATCHED` highlighting only when there is no reliable candidate after applying stable IDs, normalized/fuzzy name comparison, father-name comparison, and DOB comparison.
+
+In concise result summaries, show completely unmatched records first. Put field-conflict cases in a separate verification section only when useful or requested.
+
 ### Ambiguity handling
 
 If a student name occurs more than once, use father name and DOB to disambiguate. Do not merge two same-name students solely because the names match.
