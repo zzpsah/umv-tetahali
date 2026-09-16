@@ -6,8 +6,8 @@ Generated automatically by Development OS.
 
 ## Repository
 - Branch: main
-- HEAD: a917a9c4c86d9ba4043af147df96fb6ad902b335
-- Last commit: docs: require mismatch visibility in reconciliation results
+- HEAD: 478d6d39a9672f2755bb0bd2c8dc000b1b85fb24
+- Last commit: docs: refine unmatched highlighting rule
 - Last commit date: 2026-09-17
 - Last commit author: PRASHANT KUMAR SAH
 

@@ -1,3 +1,10 @@
+## 2026-09-17 — docs: refine unmatched highlighting rule
+- Commit: 478d6d39a9672f2755bb0bd2c8dc000b1b85fb24
+- Author: PRASHANT KUMAR SAH
+- Classification: routine
+- Changed files:
+- (no application files detected)
+
 ## 2026-09-17 — docs: require mismatch visibility in reconciliation results
 - Commit: a917a9c4c86d9ba4043af147df96fb6ad902b335
 - Author: PRASHANT KUMAR SAH
