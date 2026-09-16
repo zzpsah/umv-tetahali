@@ -6,8 +6,8 @@ Generated automatically by Development OS.
 
 ## Repository
 - Branch: main
-- HEAD: 08e8719ef3b6d4ff01730325573313de31c476f1
-- Last commit: docs: add student identity reconciliation rules
+- HEAD: a917a9c4c86d9ba4043af147df96fb6ad902b335
+- Last commit: docs: require mismatch visibility in reconciliation results
 - Last commit date: 2026-09-17
 - Last commit author: PRASHANT KUMAR SAH
 

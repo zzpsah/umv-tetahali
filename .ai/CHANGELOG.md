@@ -1,3 +1,10 @@
+## 2026-09-17 — docs: require mismatch visibility in reconciliation results
+- Commit: a917a9c4c86d9ba4043af147df96fb6ad902b335
+- Author: PRASHANT KUMAR SAH
+- Classification: routine
+- Changed files:
+- (no application files detected)
+
 ## 2026-09-17 — docs: add student identity reconciliation rules
 - Commit: 08e8719ef3b6d4ff01730325573313de31c476f1
 - Author: PRASHANT KUMAR SAH
