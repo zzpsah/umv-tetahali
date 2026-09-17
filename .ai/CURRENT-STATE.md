@@ -1,19 +1,27 @@
 # Current State
 
-Last verified: 2026-09-13
+Last verified: 2026-09-17
 
 ## Verified repository state
 - Default branch: `main`.
-- Onboarding baseline HEAD: `4e548d1eaa380e00948ba26b46ec25f335c234be`.
-- Current repository contains HTML portal/admin pages and an `assets/` directory.
-- DevOS portable context was not previously present and is being introduced without altering application code.
+- Current development branch: `staging-data-dashboard-v1`.
+- Main remains production-facing and has not been changed by the dashboard work.
+- Repository contains public/admin HTML pages, assets, DevOS context, and a new staging dashboard under `data-dashboard/` on the development branch.
+- The staging dashboard includes Supabase Auth UI, role-aware access checks, overview cards, flexible search, reconciliation, imports/audit surfaces, Siwan Dropbox integration surface, and SO2/SO3 staging placeholders.
+- A staging-only backend migration draft exists at `supabase/staging_dashboard.sql`.
+
+## Database boundary
+- Existing Supabase production source tables remain unchanged by this branch work.
+- The staging migration has NOT been applied to the production Supabase database.
+- Source snapshots must remain immutable from the dashboard.
+- Dashboard/review/form data belongs in separate governed tables and RPCs.
 
 ## Safety
-- Treat production/deployment changes separately from documentation/context changes.
-- Do not place credentials or unnecessary student/private data in repository context.
+- Do not place credentials, service-role keys, private student exports, Aadhaar/PEN lists, or unnecessary personal/student data in GitHub.
+- Browser code may use only the publishable Supabase key.
+- Production schema/deployment changes require explicit approval.
 
-## Last automated change
-- Commit: 5d608465ad261a85dcdab718974d796f017bc149
-- Change: chore: onboard DevOS portable project memory
-- Date: 2026-09-13
-- Durable context synchronization: completed
+## Development focus
+- Keep search flexible and source-aware rather than threshold-only.
+- Preserve mismatch visibility and use `NOT_FOUND` only when no plausible candidate exists.
+- Inspect actual SO2/SO3 forms before defining real field mappings.
