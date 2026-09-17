@@ -36,7 +36,7 @@
       <button data-page="ofss" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">OFSS</button>
       <button data-page="reconciliation" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Reconciliation</button>
       <button data-page="dropbox" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Siwan Dropbox</button>
-      <button data-page="forms" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">SO2 / SO3 Staging</button>
+      <button data-page="forms" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">SO2 / SO3 Forms</button>
       <button data-page="imports" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Imports & Snapshots</button>
       <button data-page="audit" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Audit</button>
     </nav>
@@ -72,13 +72,27 @@
     <section id="page-dropbox" class="page hidden p-6"><h2 class="text-2xl font-black">Siwan Dropbox</h2><div id="dropboxPanel" class="mt-5"></div></section>
 
     <section id="page-forms" class="page hidden p-6">
-      <div class="flex items-end justify-between"><div><h2 class="text-2xl font-black">SO2 / SO3 Staging</h2><p class="text-sm text-slate-500">Inspect → map → transform → validate → preview. No source overwrite.</p></div><span class="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800">FORM SCHEMA NOT FINAL</span></div>
-      <div class="grid lg:grid-cols-3 gap-5 mt-6">
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">1. Form definition</h3><select id="formType" class="w-full border rounded-xl px-3 py-2 mt-3"><option>SO2</option><option>SO3</option></select><button id="loadForm" class="mt-3 w-full rounded-xl bg-slate-900 text-white py-2 font-bold">Load staging definition</button></div>
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">2. Field mapping</h3><p class="text-sm text-slate-500 mt-2">Map each form field to UDISE / e-Shiksha / OFSS / core or a manual override. Mapping versions remain auditable.</p></div>
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">3. Validation</h3><div class="mt-2 text-sm"><span class="font-bold">Statuses:</span> READY · MISSING · CONFLICT · MANUAL_REVIEW</div></div>
+      <div class="flex items-end justify-between gap-4"><div><h2 class="text-2xl font-black">SO2 / SO3 Forms</h2><p class="text-sm text-slate-500">Fill in browser → verify → Print / Save as PDF. Source snapshots remain untouched.</p></div><span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800">PRINTABLE HTML READY</span></div>
+      <div class="grid md:grid-cols-2 gap-5 mt-6">
+        <div class="bg-white border rounded-2xl p-6">
+          <div class="text-xs font-black tracking-widest text-blue-600">UDISE+ SO2</div>
+          <h3 class="text-xl font-black mt-2">Add Missing Student Profile</h3>
+          <p class="text-sm text-slate-500 mt-2">For Class 2–12 where the student's profile is missing/not yet created in UDISE+ SDMS. Includes student details, reason, attached documents and authority undertakings.</p>
+          <a href="forms/so2.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO2 Form ↗</a>
+        </div>
+        <div class="bg-white border rounded-2xl p-6">
+          <div class="text-xs font-black tracking-widest text-violet-600">UDISE+ SO3</div>
+          <h3 class="text-xl font-black mt-2">Update Active Student Details</h3>
+          <p class="text-sm text-slate-500 mt-2">Shows existing UDISE+ details beside the requested updated values for demographic correction, with supporting-document and undertaking sections.</p>
+          <a href="forms/so3.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO3 Form ↗</a>
+        </div>
       </div>
-      <div id="formWorkspace" class="mt-5 bg-white border rounded-2xl p-5 text-sm text-slate-500">Upload/define the actual SO2/SO3 format later; staging infrastructure is ready for field mapping and transformed records.</div>
+      <div class="grid lg:grid-cols-3 gap-5 mt-6">
+        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Staging definition</h3><select id="formType" class="w-full border rounded-xl px-3 py-2 mt-3"><option>SO2</option><option>SO3</option></select><button id="loadForm" class="mt-3 w-full rounded-xl border py-2 font-bold">Load mapped definition</button></div>
+        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Field mapping</h3><p class="text-sm text-slate-500 mt-2">Next step: map student data from UDISE/e-Shiksha/OFSS/core into these printable forms and leave missing/conflicting values for manual confirmation.</p></div>
+        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Validation</h3><div class="mt-2 text-sm"><span class="font-bold">Statuses:</span> READY · MISSING · CONFLICT · MANUAL_REVIEW</div></div>
+      </div>
+      <div id="formWorkspace" class="mt-5 bg-white border rounded-2xl p-5 text-sm text-slate-500">Printable forms are ready. Database-backed autofill mapping can be added on top without changing the original source records.</div>
     </section>
 
     <section id="page-imports" class="page hidden p-6"><h2 class="text-2xl font-black">Imports & Snapshots</h2><p class="text-sm text-slate-500 mt-1">Import preview, validation, versioning and snapshot history will surface here.</p><div id="importsPanel" class="mt-5"></div></section>
