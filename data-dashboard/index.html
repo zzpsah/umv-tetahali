@@ -12,7 +12,7 @@
   <div class="w-full max-w-md bg-white rounded-3xl shadow-sm border p-7">
     <div class="text-xs font-black tracking-widest text-amber-600">STAGING / DEVELOPMENT</div>
     <h1 class="text-2xl font-black mt-2">UMV Data Dashboard</h1>
-    <p class="text-sm text-slate-500 mt-1">UDISE · e-Shiksha Kosh · OFSS · Reconciliation · SO2/SO3</p>
+    <p class="text-sm text-slate-500 mt-1">Student Master · UDISE · e-Shiksha · OFSS · Reconciliation · SO2/SO3</p>
     <form id="loginForm" class="mt-6 space-y-3">
       <input id="email" type="email" required placeholder="Email" class="w-full border rounded-xl px-4 py-3">
       <input id="password" type="password" required placeholder="Password" class="w-full border rounded-xl px-4 py-3">
@@ -24,82 +24,71 @@
 
 <div id="appView" class="hidden min-h-screen">
   <aside class="fixed inset-y-0 left-0 w-64 bg-slate-950 text-white p-4 overflow-y-auto">
-    <div class="px-2 py-3">
-      <div class="text-xs text-amber-400 font-black tracking-widest">UMV TETAHALI · STAGING</div>
-      <div class="text-lg font-black mt-1">Data Management</div>
-    </div>
-    <nav id="nav" class="mt-5 space-y-1 text-sm">
+    <div class="px-2 py-3"><div class="text-xs text-amber-400 font-black tracking-widest">UMV TETAHALI · STAGING</div><div class="text-lg font-black mt-1">Student Data Management</div></div>
+    <nav class="mt-5 space-y-1 text-sm">
       <button data-page="overview" class="nav w-full text-left px-3 py-2 rounded-lg bg-white/10">Overview</button>
-      <button data-page="students" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Students / Search</button>
-      <button data-page="udise" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">UDISE</button>
-      <button data-page="eshiksha" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">e-Shiksha Kosh</button>
-      <button data-page="ofss" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">OFSS</button>
+      <button data-page="master" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">All Students / Master</button>
       <button data-page="reconciliation" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Reconciliation</button>
-      <button data-page="dropbox" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Siwan Dropbox</button>
+      <button data-page="so2" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">SO2 Queue</button>
+      <button data-page="so3" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">SO3 Review</button>
+      <button data-page="importqueue" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Dropbox Import Queue</button>
+      <button data-page="snapshots" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Snapshots & Upload</button>
       <button data-page="forms" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">SO2 / SO3 Forms</button>
-      <button data-page="imports" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Imports & Snapshots</button>
-      <button data-page="audit" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Audit</button>
+      <button data-page="audit" class="nav w-full text-left px-3 py-2 rounded-lg hover:bg-white/10">Audit & Reporting</button>
     </nav>
   </aside>
 
   <main class="ml-64 min-h-screen">
-    <header class="sticky top-0 z-10 bg-white/95 backdrop-blur border-b">
-      <div class="px-6 py-4 flex items-center gap-4">
-        <input id="globalSearch" placeholder="Flexible search: name, father, mother, PEN, student code, APAAR, reference…" class="flex-1 border rounded-xl px-4 py-2.5">
-        <span id="who" class="text-xs text-slate-500 max-w-48 truncate"></span>
-        <button id="logout" class="border rounded-xl px-4 py-2 text-sm font-bold">Logout</button>
-      </div>
-    </header>
+    <header class="sticky top-0 z-10 bg-white/95 backdrop-blur border-b"><div class="px-6 py-4 flex items-center gap-4"><div class="flex-1"><div class="text-sm font-black">UMV Student Data Control Center</div><div class="text-xs text-slate-500">Demo UI on staging branch · source snapshots remain immutable</div></div><span id="who" class="text-xs text-slate-500 max-w-48 truncate"></span><button id="logout" class="border rounded-xl px-4 py-2 text-sm font-bold">Logout</button></div></header>
 
     <section id="page-overview" class="page p-6">
-      <div class="flex items-end justify-between gap-4"><div><h2 class="text-2xl font-black">Overview</h2><p class="text-sm text-slate-500">Live summary from governed RPCs. Source tables are never overwritten by this dashboard.</p></div><button id="refreshOverview" class="px-4 py-2 rounded-xl border bg-white text-sm font-bold">Refresh</button></div>
-      <div id="summaryCards" class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6"></div>
-      <div class="grid xl:grid-cols-2 gap-5 mt-6">
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Attention queue</h3><div id="issuesPreview" class="mt-3 text-sm text-slate-500">Loading…</div></div>
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Safety model</h3><p class="text-sm text-slate-600 mt-3">Original snapshots remain immutable. Corrections and form preparation live in staging/review layers. A mismatch stays visible as a discrepancy and is not converted to NOT_FOUND when a plausible candidate exists.</p></div>
-      </div>
+      <div><h2 class="text-2xl font-black">Overview</h2><p class="text-sm text-slate-500">Common student master, review queues, snapshots and audit in one workspace.</p></div>
+      <div id="summaryCards" class="grid md:grid-cols-3 xl:grid-cols-6 gap-4 mt-6"></div>
+      <div class="grid xl:grid-cols-2 gap-5 mt-6"><div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Class XI source priority</h3><div class="mt-3 text-sm space-y-2"><div><b>Primary:</b> OFSS</div><div><b>Secondary:</b> e-Shiksha Kosh</div><div><b>UDISE:</b> current enrollment/status reference</div><div><b>Siwan Dropbox:</b> fallback/import reference</div></div></div><div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Automatic action logic</h3><div class="text-sm text-slate-600 mt-3">UDISE missing + Dropbox not found → SO2 candidate. UDISE found but conflicting details → SO3 human review. UDISE missing + Dropbox found → Import/Reconciliation queue.</div></div></div>
     </section>
 
-    <section id="page-students" class="page hidden p-6">
-      <h2 class="text-2xl font-black">Flexible Student Search</h2><p class="text-sm text-slate-500 mt-1">Searches full master sources and returns candidate + source + match reason.</p>
-      <div id="searchResults" class="mt-5 bg-white border rounded-2xl overflow-auto"></div>
-    </section>
-
-    <section id="page-udise" class="page hidden p-6"><h2 class="text-2xl font-black">UDISE</h2><div id="udisePanel" class="mt-5"></div></section>
-    <section id="page-eshiksha" class="page hidden p-6"><h2 class="text-2xl font-black">e-Shiksha Kosh</h2><div id="eshikshaPanel" class="mt-5"></div></section>
-    <section id="page-ofss" class="page hidden p-6"><h2 class="text-2xl font-black">OFSS</h2><div id="ofssPanel" class="mt-5"></div></section>
-    <section id="page-reconciliation" class="page hidden p-6"><h2 class="text-2xl font-black">Reconciliation</h2><div id="reconPanel" class="mt-5"></div></section>
-    <section id="page-dropbox" class="page hidden p-6"><h2 class="text-2xl font-black">Siwan Dropbox</h2><div id="dropboxPanel" class="mt-5"></div></section>
-
-    <section id="page-forms" class="page hidden p-6">
-      <div class="flex items-end justify-between gap-4"><div><h2 class="text-2xl font-black">SO2 / SO3 Forms</h2><p class="text-sm text-slate-500">Fill in browser → verify → Print / Save as PDF. Source snapshots remain untouched.</p></div><span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800">PRINTABLE HTML READY</span></div>
-      <div class="grid md:grid-cols-2 gap-5 mt-6">
-        <div class="bg-white border rounded-2xl p-6">
-          <div class="text-xs font-black tracking-widest text-blue-600">UDISE+ SO2</div>
-          <h3 class="text-xl font-black mt-2">Add Missing Student Profile</h3>
-          <p class="text-sm text-slate-500 mt-2">For Class 2–12 where the student's profile is missing/not yet created in UDISE+ SDMS. Includes student details, reason, attached documents and authority undertakings.</p>
-          <a href="forms/so2.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO2 Form ↗</a>
+    <section id="page-master" class="page hidden p-6">
+      <div><h2 class="text-2xl font-black">All Students / Student Master</h2><p class="text-sm text-slate-500">One common view across all sources. Click Student Key for the full profile popup.</p></div>
+      <div class="bg-white border rounded-2xl p-4 mt-5">
+        <div class="flex flex-wrap gap-3">
+          <input id="masterSearch" class="min-w-64 flex-1 border rounded-xl px-4 py-2.5" placeholder="Search name, PEN, APAAR, Student ID, father, mother, mobile…">
+          <select id="masterClass" class="border rounded-xl px-3 py-2 bg-white"><option value="">All Classes</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select>
+          <select id="masterAction" class="border rounded-xl px-3 py-2 bg-white"><option value="">All Actions</option><option>Mapped</option><option>SO2 Candidate</option><option>SO3 Review</option><option>Import from Dropbox</option><option>Manual Review</option></select>
+          <button id="columnsBtn" class="border rounded-xl px-4 py-2 font-bold">Columns</button>
         </div>
-        <div class="bg-white border rounded-2xl p-6">
-          <div class="text-xs font-black tracking-widest text-violet-600">UDISE+ SO3</div>
-          <h3 class="text-xl font-black mt-2">Update Active Student Details</h3>
-          <p class="text-sm text-slate-500 mt-2">Shows existing UDISE+ details beside the requested updated values for demographic correction, with supporting-document and undertaking sections.</p>
-          <a href="forms/so3.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO3 Form ↗</a>
-        </div>
+        <div id="columnPanel" class="hidden mt-4 border rounded-xl p-4"><div class="font-bold text-sm">Visible columns</div><div id="columnChecks" class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-sm"></div><div class="flex flex-wrap gap-2 mt-4"><button id="identityPreset" class="border rounded-lg px-3 py-2 text-sm font-bold">Identity</button><button id="reconPreset" class="border rounded-lg px-3 py-2 text-sm font-bold">Reconciliation</button><button id="allColumns" class="border rounded-lg px-3 py-2 text-sm font-bold">All Columns</button></div></div>
       </div>
-      <div class="grid lg:grid-cols-3 gap-5 mt-6">
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Staging definition</h3><select id="formType" class="w-full border rounded-xl px-3 py-2 mt-3"><option>SO2</option><option>SO3</option></select><button id="loadForm" class="mt-3 w-full rounded-xl border py-2 font-bold">Load mapped definition</button></div>
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Field mapping</h3><p class="text-sm text-slate-500 mt-2">Next step: map student data from UDISE/e-Shiksha/OFSS/core into these printable forms and leave missing/conflicting values for manual confirmation.</p></div>
-        <div class="bg-white border rounded-2xl p-5"><h3 class="font-black">Validation</h3><div class="mt-2 text-sm"><span class="font-bold">Statuses:</span> READY · MISSING · CONFLICT · MANUAL_REVIEW</div></div>
-      </div>
-      <div id="formWorkspace" class="mt-5 bg-white border rounded-2xl p-5 text-sm text-slate-500">Printable forms are ready. Database-backed autofill mapping can be added on top without changing the original source records.</div>
+      <div class="mt-5 bg-white border rounded-2xl overflow-auto"><table class="min-w-[1900px] w-full text-xs"><thead class="bg-slate-50 text-left"><tr id="masterHead"></tr></thead><tbody id="masterBody"></tbody></table></div>
     </section>
 
-    <section id="page-imports" class="page hidden p-6"><h2 class="text-2xl font-black">Imports & Snapshots</h2><p class="text-sm text-slate-500 mt-1">Import preview, validation, versioning and snapshot history will surface here.</p><div id="importsPanel" class="mt-5"></div></section>
-    <section id="page-audit" class="page hidden p-6"><h2 class="text-2xl font-black">Audit</h2><p class="text-sm text-slate-500 mt-1">Who changed/confirmed what, when, and why.</p><div id="auditPanel" class="mt-5"></div></section>
+    <section id="page-reconciliation" class="page hidden p-6"><h2 class="text-2xl font-black">Reconciliation Workspace</h2><p class="text-sm text-slate-500 mt-1">Rule-based mapping results and ambiguities. Normal display does not depend on AI.</p><div id="reconQueue" class="grid gap-4 mt-5"></div></section>
+    <section id="page-so2" class="page hidden p-6"><h2 class="text-2xl font-black">SO2 Candidate Queue</h2><p class="text-sm text-slate-500 mt-1">Class XI: OFSS/e-Shiksha present, UDISE missing, Siwan Dropbox not found. Details auto-filled; human verification before printing.</p><div id="so2Queue" class="grid gap-4 mt-5"></div></section>
+    <section id="page-so3" class="page hidden p-6"><h2 class="text-2xl font-black">SO3 Human Review Queue</h2><p class="text-sm text-slate-500 mt-1">Existing = UDISE. Proposed = OFSS first, e-Shiksha fallback. Human review remains mandatory before printing.</p><div id="so3Queue" class="grid gap-4 mt-5"></div></section>
+    <section id="page-importqueue" class="page hidden p-6"><h2 class="text-2xl font-black">Dropbox Import / Reconciliation Queue</h2><p class="text-sm text-slate-500 mt-1">Students missing in UDISE but found in Siwan Dropbox go here instead of SO2.</p><div id="importQueue" class="grid gap-4 mt-5"></div></section>
+
+    <section id="page-snapshots" class="page hidden p-6">
+      <div class="flex items-end justify-between gap-4"><div><h2 class="text-2xl font-black">Snapshots & Upload</h2><p class="text-sm text-slate-500">Session, stream, version, date, rows, file and current status.</p></div><button id="uploadSnapshot" class="border rounded-xl px-4 py-2 font-bold bg-white">Upload Latest Snapshot</button></div>
+      <div id="uploadPanel" class="hidden mt-5 bg-white border rounded-2xl p-5"><div class="grid md:grid-cols-3 gap-3"><label class="text-sm">Source<select class="mt-1 w-full border rounded-xl px-3 py-2"><option>OFSS</option><option>UDISE</option><option>e-Shiksha</option></select></label><label class="text-sm">Session<select class="mt-1 w-full border rounded-xl px-3 py-2"><option>2026-2028</option><option>2026-2027</option></select></label><label class="text-sm">Stream<select class="mt-1 w-full border rounded-xl px-3 py-2"><option>Science</option><option>Arts</option><option>Commerce</option></select></label></div><div class="mt-4 border-2 border-dashed rounded-2xl p-8 text-center text-sm text-slate-500">CSV/XLSX upload zone — UI prototype. Real parser/import wiring comes next.</div><div class="mt-4 flex gap-2"><button class="border rounded-xl px-4 py-2 font-bold">Preview</button><button disabled class="border rounded-xl px-4 py-2 font-bold opacity-40">Confirm Import</button></div></div>
+      <div class="mt-5 bg-white border rounded-2xl overflow-auto"><table class="min-w-[1000px] w-full text-xs"><thead class="bg-slate-50 text-left"><tr><th class="p-3">Source</th><th class="p-3">Session</th><th class="p-3">Stream</th><th class="p-3">Version</th><th class="p-3">Snapshot Date</th><th class="p-3">Rows</th><th class="p-3">Source File</th><th class="p-3">Status</th></tr></thead><tbody id="snapshotBody"></tbody></table></div>
+    </section>
+
+    <section id="page-forms" class="page hidden p-6"><h2 class="text-2xl font-black">SO2 / SO3 Forms</h2><p class="text-sm text-slate-500">Printable HTML forms remain available. Queue-driven auto-fill will sit on top of them.</p><div class="grid md:grid-cols-2 gap-5 mt-6"><div class="bg-white border rounded-2xl p-6"><div class="text-xs font-black text-blue-600">SO2</div><h3 class="text-xl font-black mt-2">Add Missing Student Profile</h3><a href="forms/so2.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO2 Form ↗</a></div><div class="bg-white border rounded-2xl p-6"><div class="text-xs font-black text-violet-600">SO3</div><h3 class="text-xl font-black mt-2">Update Active Student Details</h3><a href="forms/so3.html" target="_blank" class="inline-flex mt-5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Open SO3 Form ↗</a></div></div></section>
+
+    <section id="page-audit" class="page hidden p-6"><h2 class="text-2xl font-black">Audit & Reporting</h2><p class="text-sm text-slate-500 mt-1">Human-readable actions, recommendations, changes and reasons.</p><div class="mt-5 bg-white border rounded-2xl overflow-auto"><table class="min-w-[1200px] w-full text-xs"><thead class="bg-slate-50 text-left"><tr><th class="p-3">Date/Time</th><th class="p-3">User</th><th class="p-3">Student</th><th class="p-3">Action</th><th class="p-3">Source</th><th class="p-3">Old</th><th class="p-3">New</th><th class="p-3">Reason</th></tr></thead><tbody id="auditBody"></tbody></table></div></section>
   </main>
 </div>
+
+<div id="profileModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 p-4 overflow-y-auto">
+  <div class="max-w-6xl mx-auto bg-white rounded-3xl border shadow-xl p-6 my-6">
+    <div class="flex items-start justify-between gap-4"><div><div class="text-xs font-black tracking-widest text-blue-600">STUDENT PROFILE</div><h2 id="profileName" class="text-2xl font-black mt-1"></h2><div id="profileKey" class="text-sm text-slate-500"></div></div><button id="closeProfile" class="border rounded-xl px-4 py-2 font-bold">Close</button></div>
+    <div id="decisionPanel" class="mt-5 border rounded-2xl p-4 bg-slate-50"></div>
+    <div class="grid lg:grid-cols-2 gap-5 mt-5"><div class="border rounded-2xl p-4"><h3 class="font-black">Core Details</h3><div id="profileCore" class="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm"></div></div><div class="border rounded-2xl p-4"><h3 class="font-black">Source Mapping</h3><div id="profileSources" class="space-y-2 mt-3 text-sm"></div></div></div>
+    <div class="border rounded-2xl p-4 mt-5"><h3 class="font-black">Field Comparison</h3><div class="overflow-auto mt-3"><table class="min-w-[850px] w-full text-xs"><thead class="bg-slate-50 text-left"><tr><th class="p-3">Field</th><th class="p-3">UDISE</th><th class="p-3">e-Shiksha</th><th class="p-3">OFSS</th><th class="p-3">Status</th></tr></thead><tbody id="comparisonBody"></tbody></table></div></div>
+    <div class="flex flex-wrap gap-2 mt-5"><button class="border rounded-xl px-4 py-2 font-bold">Review Match</button><button class="border rounded-xl px-4 py-2 font-bold">Add Correction</button><a href="forms/so2.html" target="_blank" class="border rounded-xl px-4 py-2 font-bold">Open SO2</a><a href="forms/so3.html" target="_blank" class="border rounded-xl px-4 py-2 font-bold">Open SO3</a></div>
+  </div>
+</div>
+
 <script src="config.js"></script>
-<script src="app.js"></script>
+<script src="app-v2.js"></script>
 </body>
 </html>
