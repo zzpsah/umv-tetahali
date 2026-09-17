@@ -79,6 +79,12 @@ Use `NOT_FOUND` / `UNMATCHED` highlighting only when there is no reliable candid
 
 In concise result summaries, show completely unmatched records first. Put field-conflict cases in a separate verification section only when useful or requested.
 
+### Flexible search rule
+
+Search is a candidate-discovery layer, not a rigid yes/no matcher. It must remain tolerant and inspect the full available source masters rather than only an expected class. Search should support stable IDs, exact and partial names, spelling-tolerant names, father name, mother name, DOB, PEN, student code, APAAR and source reference numbers. Candidate results must retain source and match reason. A search similarity score may order candidates but must not by itself redefine identity or silently discard plausible candidates.
+
+Recommended fallback order for OFSS reconciliation is: e-Shiksha Kosh → full UDISE master → Siwan Dropbox → manual review.
+
 ### Ambiguity handling
 
 If a student name occurs more than once, use father name and DOB to disambiguate. Do not merge two same-name students solely because the names match.
@@ -88,3 +94,19 @@ When evidence is incomplete or conflicting, preserve both source records and mar
 ### Auditability
 
 Every cross-source link should retain its source, matching method, and whether it was automatically or manually verified. Reconciliation must remain reversible and should never overwrite original source snapshots.
+
+## Data management dashboard
+
+A staging-first authenticated data-management dashboard is being developed under `data-dashboard/`.
+
+- Supabase remains the source of truth.
+- Dashboard roles are `admin`, `operator`, and `viewer`.
+- Original imported snapshots are immutable from the dashboard.
+- Corrections, reconciliation decisions, and generated-form preparation live in separate review/staging layers.
+- Dashboard browser access must use only a publishable Supabase key; service-role keys and secrets must never be committed.
+- Private student datasets must never be copied into the public GitHub repository.
+- Production schema/deployment changes require explicit approval.
+
+## SO2 / SO3 staging
+
+SO2 and SO3 are treated as form-generation workflows, not source-of-truth datasets. The staging pipeline is: inspect official/sample form → define fields → map source fields → transform → validate missing/conflicting values → allow audited manual override → preview/output. Do not guess SO2/SO3 fields before the real form is inspected. Mapping definitions must be versioned.
