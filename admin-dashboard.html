@@ -1,23 +1,268 @@
-<!doctype html>
-<html lang="hi">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Dashboard | उच्च माध्यमिक विद्यालय, तेतहली</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — UMV Tetahali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    // Dashboard data embedded directly — auto-refreshes from Supabase
+    // Generated: see dashboard_data.py
+    </script>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
-<header class="bg-slate-900 text-white"><div class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between gap-4"><div><div class="text-xs text-blue-300 font-semibold">RESTRICTED ADMIN AREA</div><h1 class="text-xl md:text-2xl font-black mt-1">Admin Dashboard</h1><p class="text-sm text-slate-400">उच्च माध्यमिक विद्यालय, तेतहली</p></div><button id="logout" class="px-4 py-2 rounded-xl bg-white/10 border border-white/15 text-sm font-bold hover:bg-white/15">Logout</button></div></header>
-<main class="max-w-6xl mx-auto px-4 py-8">
-<div class="bg-white border rounded-3xl p-6 shadow-sm"><div class="text-sm text-slate-500">Signed in as</div><div id="userEmail" class="font-bold text-lg mt-1">Checking session…</div><div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"><div class="rounded-2xl bg-blue-50 p-5"><div class="text-2xl">📄</div><h2 class="font-black mt-3">Restricted Documents</h2><p class="text-sm text-slate-500 mt-1">भविष्य में authenticated documents/PDF records यहाँ उपलब्ध होंगे।</p></div><div class="rounded-2xl bg-amber-50 p-5"><div class="text-2xl">📢</div><h2 class="font-black mt-3">Notice Management</h2><p class="text-sm text-slate-500 mt-1">नोटिस और circular automation के लिए सुरक्षित admin workspace.</p></div><div class="rounded-2xl bg-emerald-50 p-5"><div class="text-2xl">⚙️</div><h2 class="font-black mt-3">Automation</h2><p class="text-sm text-slate-500 mt-1">Google Drive/App Script workflows बाद में यहाँ जोड़े जा सकते हैं।</p></div></div></div>
-<div class="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900"><b>Security note:</b> Supabase Auth session इस dashboard को खोलने के लिए आवश्यक है। Database schema/RLS में इस चरण पर कोई परिवर्तन नहीं किया गया है। वास्तविक restricted database records जोड़ने से पहले संबंधित tables पर RLS policies लगाना आवश्यक होगा।</div>
-</main>
-<script>
-const SUPABASE_URL='https://sxfnrwugsyfypqgfglzc.supabase.co';
-const SUPABASE_KEY='sb_publishable_NARdPew6T6Zk8gYfxY3Hog_G7jcceKw';
-const {createClient}=supabase;const client=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-(async()=>{const {data,error}=await client.auth.getUser();if(error||!data.user){location.href='admin-login.html';return;}document.getElementById('userEmail').textContent=data.user.email||'Authenticated user';})();
-document.getElementById('logout').addEventListener('click',async()=>{await client.auth.signOut();location.href='admin-login.html';});
-</script>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Nav -->
+    <nav class="bg-blue-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-lg">🏫</div>
+                    <div>
+                        <h1 class="text-lg font-bold">UMV Tetahali</h1>
+                        <p class="text-xs text-blue-200">Dashboard | UDISE: 10160203806 | Siwan, Bihar</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-blue-200 hidden sm:inline">PRASHANT KUMAR SAH</span>
+                    <span class="text-xs bg-white/10 px-2 py-1 rounded">TR62006418</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-lg">👨‍🎓</div>
+                    <div><p class="text-sm text-gray-500">Total Students</p><p class="text-2xl font-bold text-gray-900" id="stat-students">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg">📚</div>
+                    <div><p class="text-sm text-gray-500">Class 10</p><p class="text-2xl font-bold text-gray-900" id="stat-class10">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-lg">🎓</div>
+                    <div><p class="text-sm text-gray-500">Class 12</p><p class="text-2xl font-bold text-gray-900" id="stat-class12">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-lg">📄</div>
+                    <div><p class="text-sm text-gray-500">Documents</p><p class="text-2xl font-bold text-gray-900" id="stat-docs">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-lg">✅</div>
+                    <div><p class="text-sm text-gray-500">Published</p><p class="text-2xl font-bold text-gray-900" id="stat-published">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 text-lg">👨‍🏫</div>
+                    <div><p class="text-sm text-gray-500">Teachers</p><p class="text-2xl font-bold text-gray-900" id="stat-teachers">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-lg">⚙️</div>
+                    <div><p class="text-sm text-gray-500">Proc. Jobs</p><p class="text-2xl font-bold text-gray-900" id="stat-jobs">-</p></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 text-lg">🔍</div>
+                    <div><p class="text-sm text-gray-500">Recon. Reviews</p><p class="text-2xl font-bold text-gray-900" id="stat-recon">-</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900">Students</h2>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Class 10: <span id="count-10">0</span></span>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">Class 12: <span id="count-12">0</span></span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+                <!-- Class 10 -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">Class 10 — BSEB Matric Registration (38)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500 text-left">
+                                <tr><th class="px-4 py-2 rounded-tl-lg">Reg No</th><th class="px-4 py-2">Name</th><th class="px-4 py-2">Father</th><th class="px-4 py-2">DOB</th><th class="px-4 py-2 rounded-tr-lg">Imported</th></tr>
+                            </thead>
+                            <tbody id="s10-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Class 12 -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">Class 12 — BSEB Intermediate Registration (85)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500 text-left">
+                                <tr><th class="px-4 py-2 rounded-tl-lg">BSEB ID</th><th class="px-4 py-2">Name</th><th class="px-4 py-2">Father</th><th class="px-4 py-2">DOB</th><th class="px-4 py-2 rounded-tr-lg">Imported</th></tr>
+                            </thead>
+                            <tbody id="s12-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900">Documents (29 from Telegram)</h2>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Published: <span id="doc-pub">0</span></span>
+                    <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">Failed: <span id="doc-fail">0</span></span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500 text-left">
+                        <tr><th class="px-6 py-3">Filename</th><th class="px-6 py-3">Category</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Publication</th><th class="px-6 py-3">Received</th></tr>
+                    </thead>
+                    <tbody id="docs-body" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teachers -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-8 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900">Teachers (UDISE) — 18</h2>
+                <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-medium">Siwan, Bihar</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500 text-left">
+                        <tr><th class="px-6 py-3">Name</th><th class="px-6 py-3">National Code</th><th class="px-6 py-3">Subject</th><th class="px-6 py-3">Category</th><th class="px-6 py-3">CTET</th><th class="px-6 py-3">Type</th></tr>
+                    </thead>
+                    <tbody id="teachers-body" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="border-t border-gray-200 pt-6 mt-8">
+            <div class="flex items-center justify-between text-sm text-gray-400">
+                <p>© 2026 UMV Tetahali — Government School, Siwan, Bihar - 841232</p>
+                <p class="hidden sm:inline">Powered by Supabase + GitHub Pages | Admin: PRASHANT KUMAR SAH (TR62006418)</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+    // Dashboard data — loaded from Supabase directly
+    const KEY = 'sb_publishable_NARdPew6T8gYfxY3Hog_G7jcceKw';
+    const URL = 'https://sxfnrwugsyfypqgfglzc.supabase.co/rest/v1';
+    
+    async function fetchJSON(path, params) {
+        const resp = await fetch(URL + '/' + path + (params ? '?' + params : ''), {
+            headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+        });
+        return resp.json();
+    }
+    
+    async function loadDashboard() {
+        try {
+            const [students, docs, teachers, pj, recon] = await Promise.all([
+                fetchJSON('udise_student_history?limit=500'),
+                fetchJSON('documents?limit=500'),
+                fetchJSON('Teachers_Udise?limit=500'),
+                fetchJSON('processing_jobs?limit=500'),
+                fetchJSON('umv_reconciliation_reviews?limit=500'),
+            ]);
+            
+            const c10 = students.filter(s => s.class_name === '10');
+            const c12 = students.filter(s => s.class_name === '12');
+            
+            // Stats
+            document.getElementById('stat-students').textContent = students.length;
+            document.getElementById('stat-class10').textContent = c10.length;
+            document.getElementById('stat-class12').textContent = c12.length;
+            document.getElementById('stat-docs').textContent = docs.length;
+            document.getElementById('stat-published').textContent = docs.filter(d => d.publication_status === 'Published').length;
+            document.getElementById('stat-teachers').textContent = teachers.length;
+            document.getElementById('stat-jobs').textContent = pj.length;
+            document.getElementById('stat-recon').textContent = recon.length;
+            document.getElementById('count-10').textContent = c10.length;
+            document.getElementById('count-12').textContent = c12.length;
+            document.getElementById('doc-pub').textContent = docs.filter(d => d.publication_status === 'Published').length;
+            document.getElementById('doc-fail').textContent = docs.filter(d => d.processing_status === 'Processing Failed').length;
+            
+            // Helper
+            function fmt(iso) {
+                if (!iso) return '-';
+                const d = new Date(iso);
+                return d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+            }
+            function badge(s) {
+                const c = {Completed:'bg-green-100 text-green-800',Published:'bg-green-100 text-green-800',
+                    'Processing Failed':'bg-red-100 text-red-800',Pending:'bg-yellow-100 text-yellow-800',
+                    Processing:'bg-blue-100 text-blue-800',Matched:'bg-green-100 text-green-800'};
+                return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (c[s]||'bg-gray-100 text-gray-800') + '">' + s + '</span>';
+            }
+            
+            // Student rows
+            document.getElementById('s10-body').innerHTML = c10.map(s => {
+                let father = s.father_name || '';
+                try { father = JSON.parse(s.raw_record).Father Name || father; } catch(e) {}
+                return '<tr><td class="px-4 py-3 font-medium">' + (s.pen||'-') + '</td>' +
+                    '<td class="px-4 py-3">' + s.student_name + '</td>' +
+                    '<td class="px-4 py-3 text-gray-500">' + father + '</td>' +
+                    '<td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td>' +
+                    '<td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
+            }).join('');
+            
+            document.getElementById('s12-body').innerHTML = c12.map(s => {
+                let father = s.father_name || '';
+                try { father = JSON.parse(s.raw_record).Father Name || father; } catch(e) {}
+                return '<tr><td class="px-4 py-3 font-medium">' + (s.pen||'-') + '</td>' +
+                    '<td class="px-4 py-3">' + s.student_name + '</td>' +
+                    '<td class="px-4 py-3 text-gray-500">' + father + '</td>' +
+                    '<td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td>' +
+                    '<td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
+            }).join('');
+            
+            // Document rows
+            document.getElementById('docs-body').innerHTML = docs.slice(0,20).map(d =>
+                '<tr><td class="px-6 py-3 truncate max-w-[200px]" title="' + d.display_filename + '">' + d.display_filename + '</td>' +
+                '<td class="px-6 py-3">' + badge(d.category) + '</td>' +
+                '<td class="px-6 py-3">' + badge(d.processing_status) + '</td>' +
+                '<td class="px-6 py-3">' + badge(d.publication_status) + '</td>' +
+                '<td class="px-6 py-3 text-gray-400">' + fmt(d.received_at) + '</td></tr>'
+            ).join('');
+            
+            // Teacher rows
+            document.getElementById('teachers-body').innerHTML = teachers.map(t =>
+                '<tr><td class="px-6 py-3 font-medium">' + (t.teacher_name || t.Staff_Name || '-') + '</td>' +
+                '<td class="px-6 py-3 text-gray-500">' + (t.national_code || t.National_Code || '-') + '</td>' +
+                '<td class="px-6 py-3 text-gray-500">' + (t.subject || t.Appointed_for_Subject || '-') + '</td>' +
+                '<td class="px-6 py-3 text-gray-500">' + (t.category || t.Social_Category || '-') + '</td>' +
+                '<td class="px-6 py-3 text-gray-500">' + (t.ctet || t['Whether Teacher is CTET/STET qualified?'] || 'No') + '</td>' +
+                '<td class="px-6 py-3 text-gray-500">' + (t.teacher_type || t.Type_of_Teacher || '-') + '</td></tr>'
+            ).join('');
+            
+            console.log('✅ Dashboard loaded from Supabase');
+        } catch(e) {
+            console.error('Dashboard load error:', e);
+            document.body.innerHTML += '<div class="p-4 bg-red-100 text-red-800 rounded mt-4">⚠️ Could not load data from Supabase: ' + e.message + '</div>';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
 </body>
 </html>
