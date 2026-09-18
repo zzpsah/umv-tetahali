@@ -1,27 +1,58 @@
 # Current State
 
-Last verified: 2026-09-17
+Last verified: 2026-09-18
 
 ## Verified repository state
 - Default branch: `main`.
 - Current development branch: `staging-data-dashboard-v1`.
-- Main remains production-facing and has not been changed by the dashboard work.
-- Repository contains public/admin HTML pages, assets, DevOS context, and a new staging dashboard under `data-dashboard/` on the development branch.
-- The staging dashboard includes Supabase Auth UI, role-aware access checks, overview cards, flexible search, reconciliation, imports/audit surfaces, Siwan Dropbox integration surface, and SO2/SO3 staging placeholders.
-- A staging-only backend migration draft exists at `supabase/staging_dashboard.sql`.
+- Main remains production-facing and has not been changed by the current dashboard UI work.
+- The internal dashboard lives under `data-dashboard/`.
+- `data-dashboard/index.html` is the staging dashboard shell.
+- `data-dashboard/app-v2.js` is now the active Student Master UI logic and is bound to live Supabase dashboard RPC data rather than hardcoded student demo rows.
+- Printable SO2 and SO3 HTML forms exist under `data-dashboard/forms/`.
+- UDISE reference material is stored under `docs/udise-reference/`.
 
-## Database boundary
-- Existing Supabase production source tables remain unchanged by this branch work.
-- The staging migration has NOT been applied to the production Supabase database.
-- Source snapshots must remain immutable from the dashboard.
-- Dashboard/review/form data belongs in separate governed tables and RPCs.
+## Live dashboard capabilities
+- Authenticated dashboard access is role-aware through Supabase.
+- The All Students / Student Master view is keyed by durable `core.student_key`.
+- Important default columns include student identity, father/mother, DOB, category, class/section/stream, PEN, APAAR, student code, mobile, source presence, issue status, recommended action and snapshot information.
+- Student Key opens a profile/comparison view.
+- The profile compares mapped UDISE, e-Shiksha and OFSS values and shows Siwan Dropbox presence.
+- The dashboard surfaces reconciliation, SO2 candidates, SO3 review, Dropbox import/reconciliation candidates, snapshot history and audit surfaces.
+- Demo/hardcoded student rows were removed after verification showed that example rows could be mistaken for real source data.
+
+## Database / RPC state
+- Supabase project `umv-db` remains the data source.
+- Dashboard-specific production RPCs have been applied with explicit user approval.
+- A guarded `public.dashboard_student_master(limit_n integer)` RPC now exposes the live consolidated Student Master to authenticated dashboard roles.
+- Dashboard RPC access is restricted to authorized roles through `dashboard_has_role(...)`.
+- Source snapshot tables remain immutable from dashboard workflows.
+- Dashboard logic must not overwrite imported UDISE, e-Shiksha, OFSS or Dropbox source snapshots.
+- Corrections, review decisions, generated-form preparation and future write actions must remain in separate governed/audited layers.
+
+## Class XI source priority and action routing
+For Class XI reconciliation:
+1. OFSS is the primary admission source.
+2. e-Shiksha Kosh is the secondary source.
+3. UDISE is the current enrollment/status reference.
+4. Siwan Dropbox is the fallback/history/import reference.
+
+Current intended deterministic routing:
+- UDISE present and no material conflict → `Mapped`.
+- UDISE missing + Siwan Dropbox found → `Import from Dropbox`.
+- Class XI OFSS-linked student + UDISE missing + Siwan Dropbox not found → `SO2 Candidate`.
+- UDISE present but relevant source fields conflict → `SO3 Review`.
+- Other unresolved cases → `Manual Review`.
+
+## SO2 / SO3 workflow
+- SO2 and SO3 are preparation/review workflows, not source-of-truth datasets.
+- SO2 candidate details are intended to prefill automatically from OFSS first, then e-Shiksha for missing fields.
+- SO3 Existing Details come from UDISE; Proposed Details use OFSS first and e-Shiksha as fallback/reference.
+- SO3 requires human review before final printing.
+- Autofill never means auto-approval and does not directly mutate UDISE.
 
 ## Safety
-- Do not place credentials, service-role keys, private student exports, Aadhaar/PEN lists, or unnecessary personal/student data in GitHub.
+- Do not place credentials, service-role keys, private student exports, Aadhaar/PEN lists or unnecessary personal/student data in GitHub.
 - Browser code may use only the publishable Supabase key.
-- Production schema/deployment changes require explicit approval.
-
-## Development focus
-- Keep search flexible and source-aware rather than threshold-only.
-- Preserve mismatch visibility and use `NOT_FOUND` only when no plausible candidate exists.
-- Inspect actual SO2/SO3 forms before defining real field mappings.
+- Do not merge staging work to `main` or change production website deployment without explicit approval.
+- Never manually edit `.ai/STATE-INDEX.md`; it is generated by DevOS.
