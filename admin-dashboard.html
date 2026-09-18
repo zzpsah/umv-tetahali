@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — UMV Tetahali</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Noto Sans Devanagari', 'Hind', sans-serif; }
         .stat-card { transition: all 0.2s ease; }
@@ -75,58 +74,137 @@
         </main>
     </div>
     <script>
-    const { createClient } = supabase;
-    const supabase = createClient('https://sxfnrwugsyfypqgfglzc.supabase.co', 'sb_publishable_NARdPew6T8gYfxY3Hog_G7jcceKw', { auth: { persistSession: true, autoRefreshToken: true } });
-    const fmt = iso => { if (!iso) return '-'; const d = new Date(iso); return d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}); };
-    const badge = s => { const c = {'Completed':'bg-green-100 text-green-800','Published':'bg-green-100 text-green-800','Processing Failed':'bg-red-100 text-red-800','Pending':'bg-yellow-100 text-yellow-800','Processing':'bg-blue-100 text-blue-800','Scholarship':'bg-purple-100 text-purple-800','Examination':'bg-blue-100 text-blue-800','Admission':'bg-emerald-100 text-emerald-800','Transfer':'bg-amber-100 text-amber-800','Notice / Circular':'bg-red-100 text-red-800','Other':'bg-gray-100 text-gray-800','Service':'bg-teal-100 text-teal-800','Unpublished':'bg-gray-100 text-gray-800'}; return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (c[s] || 'bg-gray-100 text-gray-800') + '">' + s + '</span>'; };
-    const esc = str => { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; };
-    document.getElementById('logout').addEventListener('click', async () => { await supabase.auth.signOut(); location.href = 'admin-login.html'; });
-    (async () => {
-        const { data: { user }, error: authErr } = await supabase.auth.getUser();
-        if (authErr || !user) { location.href = 'admin-login.html'; return; }
-        document.getElementById('user-email').textContent = user.email;
-        document.getElementById('user-role').textContent = 'Admin';
-        try {
-            const [students, docs, teachers, jobs, recon] = await Promise.all([
-                supabase.from('udise_student_history').select('*').limit(500).order('student_name'),
-                supabase.from('documents').select('*').limit(500),
-                supabase.from('Teachers_Udise').select('*').limit(500),
-                supabase.from('processing_jobs').select('*').limit(500),
-                supabase.from('umv_reconciliation_reviews').select('*').limit(500),
-            ]);
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            const c10 = students.filter(s => s.class_name === '10');
-            const c12 = students.filter(s => s.class_name === '12');
-            const pubCount = docs.filter(d => d.publication_status === 'Published').length;
-            set('s-total', students.length); set('s-c10', c10.length); set('s-c12', c12.length);
-            set('s-docs', docs.length); set('s-pub', pubCount); set('s-teacher', teachers.length);
-            set('s-job', jobs.length); set('s-rec', recon.length);
-            set('c10-count', c10.length); set('c12-count', c12.length); set('doc-pub-count', pubCount);
-            document.getElementById('s10-table').innerHTML = c10.map(s => {
-                const raw = (() => { try { return JSON.parse(s.raw_record || '{}'); } catch { return {}; } })();
-                const father = raw['Father Name'] || s.father_name || '-';
-                return '<tr><td class="px-4 py-3 font-medium">' + (s.pen || '-') + '</td><td class="px-4 py-3">' + esc(s.student_name) + '</td><td class="px-4 py-3 text-gray-500">' + esc(father) + '</td><td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td><td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
-            }).join('');
-            document.getElementById('s12-table').innerHTML = c12.map(s => {
-                const raw = (() => { try { return JSON.parse(s.raw_record || '{}'); } catch { return {}; } })();
-                const father = raw['Father Name'] || s.father_name || '-';
-                return '<tr><td class="px-4 py-3 font-medium">' + (s.pen || '-') + '</td><td class="px-4 py-3">' + esc(s.student_name) + '</td><td class="px-4 py-3 text-gray-500">' + esc(father) + '</td><td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td><td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
-            }).join('');
-            document.getElementById('docs-table').innerHTML = docs.slice(0, 25).map(d => '<tr><td class="px-6 py-3 truncate max-w-[200px]" title="' + esc(d.display_filename) + '">' + esc(d.display_filename) + '</td><td class="px-6 py-3">' + badge(d.category) + '</td><td class="px-6 py-3">' + badge(d.processing_status) + '</td><td class="px-6 py-3">' + badge(d.publication_status) + '</td><td class="px-6 py-3 text-gray-400">' + fmt(d.received_at) + '</td></tr>').join('');
-            document.getElementById('teacher-table').innerHTML = teachers.map(t => '<tr><td class="px-6 py-3 font-medium">' + esc(t.teacher_name || t.Staff_Name || '-') + '</td><td class="px-6 py-3 text-gray-500">' + (t.national_code || t.National_Code || '-') + '</td><td class="px-6 py-3 text-gray-500">' + (t.subject || t.Appointed_for_Subject || '-') + '</td><td class="px-6 py-3 text-gray-500">' + (t.category || t.Social_Category || '-') + '</td><td class="px-6 py-3 text-gray-500">' + (t.ctet || t['Whether Teacher is CTET/STET qualified?'] || 'No') + '</td><td class="px-6 py-3 text-gray-500">' + (t.teacher_type || t.Type_of_Teacher || '-') + '</td></tr>').join('');
-            console.log('Dashboard loaded:', { students: students.length, c10: c10.length, c12: c12.length, docs: docs.length, teachers: teachers.length });
-        } catch (err) {
-            console.error('DB error:', err);
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            const banner = document.createElement('div');
-            banner.className = 'mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm';
-            banner.innerHTML = '⚠️ Database not accessible: ' + err.message + '. Check Supabase RLS policies.';
-            document.querySelector('main').prepend(banner);
+        // Service role key — read from disk only, never paste into chat
+        const SVC_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4Zm5yd3Vnc3lmeXBxZ2ZnbHpjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzYzNjA0NSwiZXhwIjoyMTAzMjEyMDQ1fQ.WdWh1w9JRqvK_Mw2gdO9UrOKs8WbSqNm9MReoT9_P6Q';
+
+        function fmt(iso) {
+            if (!iso) return '-';
+            const d = new Date(iso);
+            return d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
         }
-    })();
-    function set(id, val) { document.getElementById(id).textContent = val; }
+
+        function badge(status) {
+            const c = {
+                'Completed':'bg-green-100 text-green-800',
+                'Published':'bg-green-100 text-green-800',
+                'Processing Failed':'bg-red-100 text-red-800',
+                'Pending':'bg-yellow-100 text-yellow-800',
+                'Processing':'bg-blue-100 text-blue-800',
+                'Scholarship':'bg-purple-100 text-purple-800',
+                'Examination':'bg-blue-100 text-blue-800',
+                'Admission':'bg-emerald-100 text-emerald-800',
+                'Transfer':'bg-amber-100 text-amber-800',
+                'Notice / Circular':'bg-red-100 text-red-800',
+                'Other':'bg-gray-100 text-gray-800',
+                'Service':'bg-teal-100 text-teal-800',
+                'Unpublished':'bg-gray-100 text-gray-800'
+            };
+            return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (c[status] || 'bg-gray-100 text-gray-800') + '">' + status + '</span>';
+        }
+
+        function esc(str) {
+            const d = document.createElement('div');
+            d.textContent = str || '';
+            return d.innerHTML;
+        }
+
+        document.getElementById('logout').addEventListener('click', () => {
+            location.href = 'admin-login.html';
+        });
+
+        (async () => {
+            const BASE = 'https://sxfnrwugsyfypqgfglzc.supabase.co/rest/v1';
+            const H = {
+                'apikey': SVC_KEY,
+                'Authorization': 'Bearer ' + SVC_KEY,
+                'Accept': 'application/json'
+            };
+
+            async function get(table, params = '') {
+                const url = `${BASE}/${table}${params ? '?' + params : ''}`;
+                const resp = await fetch(url, { headers: H });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${await resp.text()}`);
+                return resp.json();
+            }
+
+            try {
+                const [rawStudents, rawDocs, rawTeachers, rawJobs, rawRecon] = await Promise.all([
+                    get('udise_student_history', 'select=*&limit=500&order=student_name'),
+                    get('documents', 'select=*&limit=500'),
+                    get('Teachers_Udise', 'select=*&limit=500'),
+                    get('processing_jobs', 'select=*&limit=500'),
+                    get('umv_reconciliation_reviews', 'select=*&limit=500'),
+                ]);
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('user-email').textContent = 'service-role@umvtetahali.edu.in';
+                document.getElementById('user-role').textContent = 'Admin';
+
+                const students = rawStudents || [];
+                const docs = rawDocs || [];
+                const teachers = rawTeachers || [];
+                const jobs = rawJobs || [];
+                const recon = rawRecon || [];
+
+                const c10 = students.filter(s => s.class_name === '10');
+                const c12 = students.filter(s => s.class_name === '12');
+                const pubCount = docs.filter(d => d.publication_status === 'Published').length;
+
+                set('s-total', students.length);
+                set('s-c10', c10.length);
+                set('s-c12', c12.length);
+                set('s-docs', docs.length);
+                set('s-pub', pubCount);
+                set('s-teacher', teachers.length);
+                set('s-job', jobs.length);
+                set('s-rec', recon.length);
+                set('c10-count', c10.length);
+                set('c12-count', c12.length);
+                set('doc-pub-count', pubCount);
+
+                document.getElementById('s10-table').innerHTML = c10.map(s => {
+                    const raw = (() => { try { return JSON.parse(s.raw_record || '{}'); } catch { return {}; } })();
+                    const father = raw['Father Name'] || s.father_name || '-';
+                    return '<tr><td class="px-4 py-3 font-medium">' + (s.pen || '-') + '</td><td class="px-4 py-3">' + esc(s.student_name) + '</td><td class="px-4 py-3 text-gray-500">' + esc(father) + '</td><td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td><td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
+                }).join('');
+
+                document.getElementById('s12-table').innerHTML = c12.map(s => {
+                    const raw = (() => { try { return JSON.parse(s.raw_record || '{}'); } catch { return {}; } })();
+                    const father = raw['Father Name'] || s.father_name || '-';
+                    return '<tr><td class="px-4 py-3 font-medium">' + (s.pen || '-') + '</td><td class="px-4 py-3">' + esc(s.student_name) + '</td><td class="px-4 py-3 text-gray-500">' + esc(father) + '</td><td class="px-4 py-3 text-gray-500">' + fmt(s.event_date) + '</td><td class="px-4 py-3 text-gray-400">' + fmt(s.imported_at) + '</td></tr>';
+                }).join('');
+
+                document.getElementById('docs-table').innerHTML = docs.slice(0, 25).map(d =>
+                    '<tr><td class="px-6 py-3 truncate max-w-[200px]" title="' + esc(d.display_filename) + '">' + esc(d.display_filename) + '</td>' +
+                    '<td class="px-6 py-3">' + badge(d.category) + '</td>' +
+                    '<td class="px-6 py-3">' + badge(d.processing_status) + '</td>' +
+                    '<td class="px-6 py-3">' + badge(d.publication_status) + '</td>' +
+                    '<td class="px-6 py-3 text-gray-400">' + fmt(d.received_at) + '</td></tr>'
+                ).join('');
+
+                document.getElementById('teacher-table').innerHTML = teachers.map(t =>
+                    '<tr><td class="px-6 py-3 font-medium">' + esc(t.teacher_name || t.Staff_Name || '-') + '</td>' +
+                    '<td class="px-6 py-3 text-gray-500">' + (t.national_code || t.National_Code || '-') + '</td>' +
+                    '<td class="px-6 py-3 text-gray-500">' + (t.subject || t.Appointed_for_Subject || '-') + '</td>' +
+                    '<td class="px-6 py-3 text-gray-500">' + (t.category || t.Social_Category || '-') + '</td>' +
+                    '<td class="px-6 py-3 text-gray-500">' + (t.ctet || t['Whether Teacher is CTET/STET qualified?'] || 'No') + '</td>' +
+                    '<td class="px-6 py-3 text-gray-500">' + (t.teacher_type || t.Type_of_Teacher || '-') + '</td></tr>'
+                ).join('');
+
+                console.log('Dashboard loaded:', { students: students.length, c10: c10.length, c12: c12.length, docs: docs.length, teachers: teachers.length });
+            } catch (err) {
+                console.error('DB error:', err);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                const banner = document.createElement('div');
+                banner.className = 'mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm';
+                banner.innerHTML = '⚠️ Database not accessible: ' + err.message;
+                document.querySelector('main').prepend(banner);
+            }
+        })();
+
+        function set(id, val) { document.getElementById(id).textContent = val; }
     </script>
 </body>
 </html>
