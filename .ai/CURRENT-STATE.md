@@ -13,7 +13,7 @@ Last verified: 2026-09-13
 - Do not place credentials or unnecessary student/private data in repository context.
 
 ## Last automated change
-- Commit: 86dab8229690ecae868711e850a17cd109d622b0
-- Change: feat: UMV Tetahali automation pipeline — admin dashboard, notices, progress tracker
+- Commit: d9be92b1da76f07f199ebac0fd9423346c776dea
+- Change: fix: wire admin-dashboard to Supabase Auth client for live data
 - Date: 2026-09-18
 - Durable context synchronization: completed

@@ -1,3 +1,10 @@
+## 2026-09-18 — fix: wire admin-dashboard to Supabase Auth client for live data
+- Commit: d9be92b1da76f07f199ebac0fd9423346c776dea
+- Author: PRASHANT KUMAR SAH
+- Classification: meaningful
+- Changed files:
+- `admin-dashboard.html`
+
 ## 2026-09-18 — feat: UMV Tetahali automation pipeline — admin dashboard, notices, progress tracker
 - Commit: 86dab8229690ecae868711e850a17cd109d622b0
 - Author: PRASHANT KUMAR SAH
