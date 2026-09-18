@@ -6,8 +6,8 @@ Generated automatically by Development OS.
 
 ## Repository
 - Branch: main
-- HEAD: d9be92b1da76f07f199ebac0fd9423346c776dea
-- Last commit: fix: wire admin-dashboard to Supabase Auth client for live data
+- HEAD: 6db7cfa07755c8b78015cfbe86f41d3533c25cc4
+- Last commit: fix: wire service role key into admin dashboard for live data
 - Last commit date: 2026-09-18
 - Last commit author: PRASHANT KUMAR SAH
 

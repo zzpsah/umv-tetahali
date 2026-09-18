@@ -1,3 +1,10 @@
+## 2026-09-18 — fix: wire service role key into admin dashboard for live data
+- Commit: 6db7cfa07755c8b78015cfbe86f41d3533c25cc4
+- Author: PRASHANT KUMAR SAH
+- Classification: meaningful
+- Changed files:
+- `admin-dashboard.html`
+
 ## 2026-09-18 — fix: wire admin-dashboard to Supabase Auth client for live data
 - Commit: d9be92b1da76f07f199ebac0fd9423346c776dea
 - Author: PRASHANT KUMAR SAH

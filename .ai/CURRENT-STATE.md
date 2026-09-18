@@ -13,7 +13,7 @@ Last verified: 2026-09-13
 - Do not place credentials or unnecessary student/private data in repository context.
 
 ## Last automated change
-- Commit: d9be92b1da76f07f199ebac0fd9423346c776dea
-- Change: fix: wire admin-dashboard to Supabase Auth client for live data
+- Commit: 6db7cfa07755c8b78015cfbe86f41d3533c25cc4
+- Change: fix: wire service role key into admin dashboard for live data
 - Date: 2026-09-18
 - Durable context synchronization: completed
